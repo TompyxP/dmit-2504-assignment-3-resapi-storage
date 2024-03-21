@@ -136,8 +136,11 @@ class HomeViewState extends State<HomeView> {
                         print('companyData: $companyData');
                         print('stockData: $stockData');
                         symbol = companyData['Symbol'];
+                        print('symbol: $symbol');
                         companyName = companyData['Name'];
+                        print('companyName: $companyName');
                         price = stockData['price'];
+                        print('price: $price');
                         var stock = {
                           'symbol': symbol,
                           'name': companyName,
