@@ -71,12 +71,12 @@ class HomeViewState extends State<HomeView> {
                       style: const TextStyle(fontSize: 30),
                     ),
                     subtitle: Text(
-                      'Name: ${stockList[index]['message']}',
-                      style: const TextStyle(fontSize: 25),
+                      'Name: ${stockList[index]['name']}',
+                      style: const TextStyle(fontSize: 16),
                     ),
                     trailing: Text(
-                      'Price: ${stockList[index]['price']} ',
-                      style: const TextStyle(fontSize: 40),
+                      'Price: \$${stockList[index]['price']} USD',
+                      style: const TextStyle(fontSize: 16),
                     ),
                   )
                 );
@@ -109,7 +109,7 @@ class HomeViewState extends State<HomeView> {
                     print('User entered Symbol: $stockSymbol');
                     var symbol = stockSymbol;
                     var companyName = '';
-                    var price = '';
+                    var price = 0.0;
                     try {
                       //TODO:
                       //Inside of this try,
@@ -132,23 +132,20 @@ class HomeViewState extends State<HomeView> {
                       //finally call setstate at the end.
                       var companyData = await stockService.getCompanyInfo(symbol);
                       var stockData = await stockService.getQuote(symbol);
+
+                      symbol = companyData['Symbol'];
+                      companyName = companyData['Name'];
+                      price = double.parse(stockData['Global Quote']['05. price']);
+
+                      var formattedPrice = price.toStringAsFixed(2);
+
                       if (companyData != null && stockData != null) {
-                        print('companyData: $companyData');
-                        print('stockData: $stockData');
-                        symbol = companyData['Symbol'];
-                        print('symbol: $symbol');
-                        companyName = companyData['Name'];
-                        print('companyName: $companyName');
-                        price = stockData['price'];
-                        print('price: $price');
                         var stock = {
                           'symbol': symbol,
                           'name': companyName,
-                          'price': price
+                          'price': formattedPrice
                         };
-                        print('stock: $stock');
                         await databaseService.insertStock(stock);
-                        print('Stock inserted into db');
                         stockList = await databaseService.getAllStocksFromDb();
                         await databaseService.printAllStocksInDbToConsole();
                         setState(() {});
